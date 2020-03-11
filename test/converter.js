@@ -8,7 +8,7 @@ const {
 const tmp = require('tmp-promise');
 const fs = require('fs-extra');
 
-function cannonicalize(introspectionResult) {
+function cannonicalize (introspectionResult) {
   introspectionResult.data.__schema.directives.sort(function (a, b) {
     return a.name.localeCompare(b.name);
   });
@@ -28,7 +28,7 @@ function cannonicalize(introspectionResult) {
   return introspectionResult;
 }
 
-function makeSchemaForType(output, input) {
+function makeSchemaForType (output, input) {
   const queryType = new GraphQLObjectType({
     name: 'Query',
     fields: {
@@ -49,7 +49,7 @@ function makeSchemaForType(output, input) {
   return new GraphQLSchema({ query: queryType, mutation: mutationType });
 }
 
-async function compareSchemas(test, schema, expectedSchema) {
+async function compareSchemas (test, schema, expectedSchema) {
   const introspection = await execute({
     schema,
     document: parse(introspectionQuery)
@@ -63,7 +63,7 @@ async function compareSchemas(test, schema, expectedSchema) {
   test.deepEqual(cannonicalize(introspection), cannonicalize(expectedIntrospection));
 }
 
-async function testConversion(test, jsonSchema, expectedTypeName, expectedType, context, options = {}) {
+async function testConversion (test, jsonSchema, expectedTypeName, expectedType, context, options = {}) {
   if (!options.skipValidation) {
     const ajv = new Ajv({ schemaId: 'auto' });
     ajv.addSchema(jsonSchema);
@@ -106,7 +106,7 @@ test('empty object', async function (test) {
   await testConversion(test, emptyType, 'Empty', expectedType);
 });
 
-async function testAttrbuteType(test, jsonType, graphQLType, options) {
+async function testAttrbuteType (test, jsonType, graphQLType, options) {
   const simpleType = {
     id: 'Simple',
     type: 'object',
@@ -336,52 +336,6 @@ test('object attribute', async function (test) {
 
   await testConversion(test, simpleType, 'Object', expectedType);
 });
-
-// ISSUE 34 CUSTOM TEST CASE 1
-/*
-test('optional types', async function (test) {
-  const optionalType = {
-    id: 'OptionalSchema',
-    type: 'object',
-    properties: {
-      phoneNumber: {
-        type: ['null', 'string']
-      }
-    }
-  };
-
-  const expectedType = `
-  type OptionalSchema {
-    phoneNumber: String
-  }
-  `;
-
-  await testConversion(test, optionalType, 'OptionalSchema', expectedType);
-});
-*/
-
-// ISSUE 34 CUSTOM TEST CASE 2
-/*
-test('optional types length of array', async function (test) {
-  const optionalType = {
-    id: 'OptionalSchema',
-    type: 'object',
-    properties: {
-      phoneNumber: {
-        type: ['null', 'string', 'integer']
-      }
-    }
-  };
-
-  const expectedType = `
-  type OptionalSchema {
-    phoneNumber: Integer
-  }
-  `;
-
-  mapBasicAttributeType(optionalType.properties.phoneNumber.type, Object.keys(optionalType.properties)[0]);
-});
-*/
 
 test('$id attribute', async function (test) {
   const simpleType = {
