@@ -146,10 +146,44 @@ test('boolean attributes', async function (test) {
   await testAttrbuteType(test, 'boolean', 'Boolean');
 });
 
+// ISSUE 34 CUSTOM TEST CASE 1.3
+test('null | string attributes', async function (test) {
+  await testAttrbuteType(test, ['null', 'string'], 'String');
+});
+
+// ISSUE 34 CUSTOM TEST CASE 1.4
+test('null | integer attributes', async function (test) {
+  await testAttrbuteType(test, ['null', 'integer'], 'Int');
+});
+
+// ISSUE 34 CUSTOM TEST CASE 1.5
+test('null | float attributes', async function (test) {
+  await testAttrbuteType(test, ['null', 'number'], 'Float');
+});
+
+// ISSUE 34 CUSTOM TEST CASE 1.6
+test('null | boolean attributes', async function (test) {
+  await testAttrbuteType(test, ['null', 'boolean'], 'Boolean');
+});
+
 test('fail on unknown types attributes', async function (test) {
   const assertion = testAttrbuteType(test, 'unknown', 'unknown', { skipValidation: true });
   await test.throwsAsync(() => assertion, 'A JSON Schema attribute type unknown on attribute Simple.attribute does not have a known GraphQL mapping');
 });
+
+// ISSUE 34 CUSTOM TEST CASE 1.7
+test('fail with type array in wrong order', async function (test) {
+  const assertion = testAttrbuteType(test, ['string', 'null'], 'null', { skipValidation: true });
+  await test.throwsAsync(() => assertion, 'type "null" must come first in JSON Schema attribute type array');
+});
+
+// ISSUE 34 CUSTOM TEST CASE 1.8
+test('fail with more than 2 elements in type array', async function (test) {
+  const assertion = testAttrbuteType(test, ['null', 'string', 'int'], 'int', { skipValidation: true });
+  await test.throwsAsync(() => assertion, 'JSON Schema attribute type array can only have a max of 2 types/elements');
+});
+
+
 
 test('array attributes', async function (test) {
   const simpleType = {
@@ -255,7 +289,8 @@ test('object attribute', async function (test) {
   await testConversion(test, simpleType, 'Object', expectedType);
 });
 
-// ISSUE 34 CUSTOM TEST CASE
+// ISSUE 34 CUSTOM TEST CASE 1
+/*
 test('optional types', async function (test) {
   const optionalType = {
     id: 'OptionalSchema',
@@ -265,16 +300,40 @@ test('optional types', async function (test) {
         type: ['null', 'string']
       }
     }
-  }
+  };
 
   const expectedType = `
   type OptionalSchema {
-    phoneNumber: String // Note the missing ! meaning that the phoneNumber could be null
+    phoneNumber: String
   }
   `;
 
   await testConversion(test, optionalType, 'OptionalSchema', expectedType);
 });
+*/
+
+// ISSUE 34 CUSTOM TEST CASE 2
+/*
+test('optional types length of array', async function (test) {
+  const optionalType = {
+    id: 'OptionalSchema',
+    type: 'object',
+    properties: {
+      phoneNumber: {
+        type: ['null', 'string', 'integer']
+      }
+    }
+  };
+
+  const expectedType = `
+  type OptionalSchema {
+    phoneNumber: Integer
+  }
+  `;
+
+  mapBasicAttributeType(optionalType.properties.phoneNumber.type, Object.keys(optionalType.properties)[0]);
+});
+*/
 
 test('$id attribute', async function (test) {
   const simpleType = {
