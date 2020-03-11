@@ -183,7 +183,55 @@ test('fail with more than 2 elements in type array', async function (test) {
   await test.throwsAsync(() => assertion, 'JSON Schema attribute type array can only have a max of 2 types/elements');
 });
 
+// ISSUE 34 CUSTOM TEST CASE 2.1
+test('process attributes within array - variation --> String', async function (test) {
+  const optionalTypes = {
+    id: 'OptionalSchema',
+    type: 'object',
+    properties: {
+      attribute: {
+        type: ['null', 'string']
+      }
+    }
+  };
 
+  const expectedType = `
+  type OptionalSchema {
+    attribute: String
+  }
+
+  input OptionalSchema${INPUT_SUFFIX} {
+    attribute: String 
+  }
+  `;
+
+  await testConversion(test, optionalTypes, 'OptionalSchema', expectedType);
+});
+
+// ISSUE 34 CUSTOM TEST CASE 2.2
+test('process attributes within array - variation --> Float', async function (test) {
+  const optionalTypes = {
+    id: 'OptionalSchema',
+    type: 'object',
+    properties: {
+      attribute: {
+        type: ['null', 'number']
+      }
+    }
+  };
+
+  const expectedType = `
+  type OptionalSchema {
+    attribute: Float
+  }
+
+  input OptionalSchema${INPUT_SUFFIX} {
+    attribute: Float
+  }
+  `;
+
+  await testConversion(test, optionalTypes, 'OptionalSchema', expectedType);
+});
 
 test('array attributes', async function (test) {
   const simpleType = {
