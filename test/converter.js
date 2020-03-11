@@ -255,6 +255,7 @@ test('object attribute', async function (test) {
   await testConversion(test, simpleType, 'Object', expectedType);
 });
 
+// ISSUE 34 CUSTOM TEST CASE
 test('optional types', async function (test) {
   const optionalType = {
     id: 'OptionalSchema',
@@ -273,7 +274,7 @@ test('optional types', async function (test) {
   `;
 
   await testConversion(test, optionalType, 'OptionalSchema', expectedType);
-}
+});
 
 test('$id attribute', async function (test) {
   const simpleType = {
