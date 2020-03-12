@@ -17,10 +17,97 @@ needed.
 
 ## Example JSON Schema
 
+---
+
 A valid JSON Schema has the following format:
 
-![Example JSON Schema](./public/example-json-schema.png)
+json-schemas/schema-1
 
-1. `$id` is the identifier for the type you wish to create.
-2. `type` can either be an array or an object.
-3. `properties` are something...
+```
+{
+  "$id": "DummyData",
+  "type": "object",
+  "properties": {
+    "attribute": {
+      "type": "string"
+    }
+  }
+}
+```
+
+json-schemas/schema-2
+
+```
+[
+  {
+    "$id": "schema1",
+    "type": "object",
+    "properties": {
+      "attribute": {
+        "type": "string"
+      }
+    }
+  },
+  {
+    "$id": "schema2",
+    "type": "object",
+    "properties": {
+      "attribute": {
+        "type": "string"
+      }
+    }
+  }
+]
+```
+
+1. `$id` does something
+2. `type` does something
+3. `properties` does something
+
+## Example Usage
+
+---
+
+    convert-json-schemas-to-graphql-types json-schemas
+
+## Example Output
+
+---
+
+### Schema 1
+
+```
+type DummyData {
+  attribute: String
+}
+
+input DummyDataIn {
+  attribute: String
+}
+
+type Mutation {
+  DummyData(input: DummyDataIn): String
+  Schema1(input: Schema1In): String
+  Schema2(input: Schema2In): String
+}
+```
+
+### Schema 2
+
+```
+type Schema1 {
+  attribute: String
+}
+
+input Schema1In {
+  attribute: String
+}
+
+type Schema2 {
+  attribute: String
+}
+
+input Schema2In {
+  attribute: String
+}
+```
