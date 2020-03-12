@@ -17,8 +17,6 @@ needed.
 
 ## Example JSON Schema
 
----
-
 A valid JSON Schema has the following format:
 
 json-schemas/schema-1
@@ -66,13 +64,9 @@ json-schemas/schema-2
 
 ## Example Usage
 
----
-
     convert-json-schemas-to-graphql-types json-schemas
 
 ## Example Output
-
----
 
 ### Schema 1
 
