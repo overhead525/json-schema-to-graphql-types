@@ -132,22 +132,22 @@ async function testAttrbuteType (test, jsonType, graphQLType, options) {
 
 // Changed to relfect new functionality
 test('string attributes', async function (test) {
-  await testAttrbuteType(test, 'string', 'String!');
+  await testAttrbuteType(test, 'string', 'String');
 });
 
 // Changed to reflect new functionality
 test('integer attributes', async function (test) {
-  await testAttrbuteType(test, 'integer', 'Int!');
+  await testAttrbuteType(test, 'integer', 'Int');
 });
 
 // Changed to reflect new functionality
 test('float attributes', async function (test) {
-  await testAttrbuteType(test, 'number', 'Float!');
+  await testAttrbuteType(test, 'number', 'Float');
 });
 
 // Changed to reflect new functionality
 test('boolean attributes', async function (test) {
-  await testAttrbuteType(test, 'boolean', 'Boolean!');
+  await testAttrbuteType(test, 'boolean', 'Boolean');
 });
 
 // ISSUE 34 CUSTOM TEST CASE 1.3

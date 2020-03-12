@@ -54,21 +54,14 @@ function mapBasicAttributeType (type, attributeName) {
     } else {
       throw new Error(`JSON Schema attribute type array can only have a max of 2 types/elements`);
     }
-    switch (processedType) {
-      case 'string': return GraphQLString;
-      case 'integer': return GraphQLInt;
-      case 'number': return GraphQLFloat;
-      case 'boolean': return GraphQLBoolean;
-      default: throw new Error(`A JSON Schema attribute type ${processedType} on attribute ${attributeName} does not have a known GraphQL mapping`);
-    }
   } else {
     processedType = type;
   }
   switch (processedType) {
-    case 'string': return GraphQLNonNull(GraphQLString);
-    case 'integer': return GraphQLNonNull(GraphQLInt);
-    case 'number': return GraphQLNonNull(GraphQLFloat);
-    case 'boolean': return GraphQLNonNull(GraphQLBoolean);
+    case 'string': return GraphQLString;
+    case 'integer': return GraphQLInt;
+    case 'number': return GraphQLFloat;
+    case 'boolean': return GraphQLBoolean;
     default: throw new Error(`A JSON Schema attribute type ${processedType} on attribute ${attributeName} does not have a known GraphQL mapping`);
   }
 }
