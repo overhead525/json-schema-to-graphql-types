@@ -130,42 +130,34 @@ async function testAttrbuteType (test, jsonType, graphQLType, options) {
   await testConversion(test, simpleType, 'Simple', expectedType, undefined, options);
 }
 
-// Changed to relfect new functionality
 test('string attributes', async function (test) {
   await testAttrbuteType(test, 'string', 'String');
 });
 
-// Changed to reflect new functionality
 test('integer attributes', async function (test) {
   await testAttrbuteType(test, 'integer', 'Int');
 });
 
-// Changed to reflect new functionality
 test('float attributes', async function (test) {
   await testAttrbuteType(test, 'number', 'Float');
 });
 
-// Changed to reflect new functionality
 test('boolean attributes', async function (test) {
   await testAttrbuteType(test, 'boolean', 'Boolean');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 1.3
 test('null | string attributes', async function (test) {
   await testAttrbuteType(test, ['null', 'string'], 'String');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 1.4
 test('null | integer attributes', async function (test) {
   await testAttrbuteType(test, ['null', 'integer'], 'Int');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 1.5
 test('null | float attributes', async function (test) {
   await testAttrbuteType(test, ['null', 'number'], 'Float');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 1.6
 test('null | boolean attributes', async function (test) {
   await testAttrbuteType(test, ['null', 'boolean'], 'Boolean');
 });
@@ -175,19 +167,16 @@ test('fail on unknown types attributes', async function (test) {
   await test.throwsAsync(() => assertion, 'A JSON Schema attribute type unknown on attribute Simple.attribute does not have a known GraphQL mapping');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 1.7
 test('fail if array includes does not include "null"', async function (test) {
   const assertion = testAttrbuteType(test, ['int', 'string'], 'String', { skipValidation: true });
   await test.throwsAsync(() => assertion, 'JSON Schema type attribute arrays should only be used to specify nullable type "[null, string]"');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 1.8
 test('fail with more than 2 elements in type array', async function (test) {
   const assertion = testAttrbuteType(test, ['null', 'string', 'int'], 'int', { skipValidation: true });
   await test.throwsAsync(() => assertion, 'JSON Schema attribute type array can only have a max of 2 types/elements');
 });
 
-// ISSUE 34 CUSTOM TEST CASE 2.1
 test('process attributes within array - variation --> String', async function (test) {
   const optionalTypes = {
     id: 'OptionalSchema',
@@ -212,7 +201,6 @@ test('process attributes within array - variation --> String', async function (t
   await testConversion(test, optionalTypes, 'OptionalSchema', expectedType);
 });
 
-// ISSUE 34 CUSTOM TEST CASE 2.2
 test('process attributes within array - variation --> Float', async function (test) {
   const optionalTypes = {
     id: 'OptionalSchema',
