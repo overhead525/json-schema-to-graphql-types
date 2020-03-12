@@ -19,7 +19,7 @@ const DROP_ATTRIBUTE_MARKER = Symbol('A marker to drop the attributes');
 
 const referencePrefix = '#/definitions/';
 
-function normalizeTypeName(typeName) {
+function normalizeTypeName (typeName) {
   /* If the typeName is a URI, this will extract the
      file-name between the last '/' and '.json' extension
      If the typeName is not a URI, this will only camelCase it */
@@ -32,18 +32,18 @@ function normalizeTypeName(typeName) {
   return normalizedTypeName;
 }
 
-function getItemTypeName(typeName, buildingInputType) {
+function getItemTypeName (typeName, buildingInputType) {
   const normalizedTypeName = normalizeTypeName(typeName);
   return `${normalizedTypeName}${buildingInputType ? INPUT_SUFFIX : ''}`;
 }
 
-function getReferenceName(referenceName, buildingInputType) {
+function getReferenceName (referenceName, buildingInputType) {
   return referenceName.startsWith(referencePrefix)
     ? getItemTypeName(`${DEFINITION_PREFIX}.${referenceName.split(referencePrefix)[1]}`, buildingInputType)
     : referenceName;
 }
 
-function mapBasicAttributeType(type, attributeName) {
+function mapBasicAttributeType (type, attributeName) {
   let processedType;
   if (type instanceof Array) {
     if (type.length === 2) {
@@ -73,7 +73,7 @@ function mapBasicAttributeType(type, attributeName) {
   }
 }
 
-function toSafeEnumKey(value) {
+function toSafeEnumKey (value) {
   if (/^[0-9]/.test(value)) {
     value = 'VALUE_' + value;
   }
@@ -88,7 +88,7 @@ function toSafeEnumKey(value) {
   }
 }
 
-function buildEnumType(context, attributeName, enumValues) {
+function buildEnumType (context, attributeName, enumValues) {
   const enumName = uppercamelcase(attributeName);
   const graphqlToJsonMap = keyBy(enumValues, toSafeEnumKey);
 
@@ -106,7 +106,7 @@ function buildEnumType(context, attributeName, enumValues) {
 
 // Handles any custom object types fields. It will map on all the properties of the object with
 // mapType to match to the corresponding graphql type. It also handles the required/nonNull types
-function getObjectFields(context, schema, typeName, buildingInputType) {
+function getObjectFields (context, schema, typeName, buildingInputType) {
   if (isEmpty(schema.properties)) {
     return {
       _typesWithoutFieldsAreNotAllowed_: {
@@ -127,7 +127,7 @@ function getObjectFields(context, schema, typeName, buildingInputType) {
 }
 
 // Matches any json schema type to the graphql corresponding type (including recursive types)
-function mapType(context, attributeDefinition, attributeName, buildingInputType) {
+function mapType (context, attributeDefinition, attributeName, buildingInputType) {
   if (attributeDefinition.type === 'array') {
     const itemName = attributeDefinition.items.$ref ? attributeName : `${attributeName}Item`;
     const elementType = mapType(context, attributeDefinition.items, itemName, buildingInputType);
@@ -191,7 +191,7 @@ function mapType(context, attributeDefinition, attributeName, buildingInputType)
   return mapBasicAttributeType(attributeDefinition.type, attributeName);
 }
 
-function registerDefinitionTypes(context, schema, buildingInputType) {
+function registerDefinitionTypes (context, schema, buildingInputType) {
   if (schema.definitions) {
     validators.validateDefinitions(schema.definitions);
     const typeMap = buildingInputType ? context.inputs : context.types;
@@ -202,7 +202,7 @@ function registerDefinitionTypes(context, schema, buildingInputType) {
   }
 }
 
-function buildUnionType(context, typeName, schema, buildingInputType) {
+function buildUnionType (context, typeName, schema, buildingInputType) {
   if (buildingInputType) return DROP_ATTRIBUTE_MARKER;
   let union;
   let getElement;
@@ -223,7 +223,7 @@ function buildUnionType(context, typeName, schema, buildingInputType) {
   });
 }
 
-function buildRootType(context, typeName, schema) {
+function buildRootType (context, typeName, schema) {
   registerDefinitionTypes(context, schema);
   registerDefinitionTypes(context, schema, true);
   const output = mapType(context, schema, typeName);
@@ -232,7 +232,7 @@ function buildRootType(context, typeName, schema) {
   return { input, output };
 }
 
-function buildRootUnionType(context, typeName, schema) {
+function buildRootUnionType (context, typeName, schema) {
   const output = buildUnionType(context, typeName, schema);
 
   // There are no input union types in GraphQL
@@ -240,7 +240,7 @@ function buildRootUnionType(context, typeName, schema) {
   return { output, input: undefined };
 }
 
-function convert(context, schema) {
+function convert (context, schema) {
   const typeName = schema.id || schema['$id'];
   validators.validateTopLevelId(typeName, schema);
 
@@ -255,7 +255,7 @@ function convert(context, schema) {
   return { output, input };
 }
 
-function newContext() {
+function newContext () {
   return {
     types: new Map(),
     inputs: new Map(),
@@ -265,13 +265,13 @@ function newContext() {
 }
 
 class UnknownTypeReference extends Error {
-  constructor(message) {
+  constructor (message) {
     super(message);
     this.name = 'UnknownTypeReference';
   }
 }
 
-function getConvertEnumFromGraphQLCode(context, attributePath) {
+function getConvertEnumFromGraphQLCode (context, attributePath) {
   const valueMap = context.enumMaps.get(attributePath);
 
   const cases = map(valueMap, function (jsonValue, graphQlValue) {
