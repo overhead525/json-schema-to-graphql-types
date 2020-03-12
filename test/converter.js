@@ -8,7 +8,7 @@ const {
 const tmp = require('tmp-promise');
 const fs = require('fs-extra');
 
-function cannonicalize (introspectionResult) {
+function cannonicalize(introspectionResult) {
   introspectionResult.data.__schema.directives.sort(function (a, b) {
     return a.name.localeCompare(b.name);
   });
@@ -28,7 +28,7 @@ function cannonicalize (introspectionResult) {
   return introspectionResult;
 }
 
-function makeSchemaForType (output, input) {
+function makeSchemaForType(output, input) {
   const queryType = new GraphQLObjectType({
     name: 'Query',
     fields: {
@@ -49,7 +49,7 @@ function makeSchemaForType (output, input) {
   return new GraphQLSchema({ query: queryType, mutation: mutationType });
 }
 
-async function compareSchemas (test, schema, expectedSchema) {
+async function compareSchemas(test, schema, expectedSchema) {
   const introspection = await execute({
     schema,
     document: parse(introspectionQuery)
@@ -63,7 +63,7 @@ async function compareSchemas (test, schema, expectedSchema) {
   test.deepEqual(cannonicalize(introspection), cannonicalize(expectedIntrospection));
 }
 
-async function testConversion (test, jsonSchema, expectedTypeName, expectedType, context, options = {}) {
+async function testConversion(test, jsonSchema, expectedTypeName, expectedType, context, options = {}) {
   if (!options.skipValidation) {
     const ajv = new Ajv({ schemaId: 'auto' });
     ajv.addSchema(jsonSchema);
@@ -106,7 +106,7 @@ test('empty object', async function (test) {
   await testConversion(test, emptyType, 'Empty', expectedType);
 });
 
-async function testAttrbuteType (test, jsonType, graphQLType, options) {
+async function testAttrbuteType(test, jsonType, graphQLType, options) {
   const simpleType = {
     id: 'Simple',
     type: 'object',
@@ -130,20 +130,24 @@ async function testAttrbuteType (test, jsonType, graphQLType, options) {
   await testConversion(test, simpleType, 'Simple', expectedType, undefined, options);
 }
 
+// Changed to relfect new functionality
 test('string attributes', async function (test) {
-  await testAttrbuteType(test, 'string', 'String');
+  await testAttrbuteType(test, 'string', 'String!');
 });
 
+// Changed to reflect new functionality
 test('integer attributes', async function (test) {
-  await testAttrbuteType(test, 'integer', 'Int');
+  await testAttrbuteType(test, 'integer', 'Int!');
 });
 
+// Changed to reflect new functionality
 test('float attributes', async function (test) {
-  await testAttrbuteType(test, 'number', 'Float');
+  await testAttrbuteType(test, 'number', 'Float!');
 });
 
+// Changed to reflect new functionality
 test('boolean attributes', async function (test) {
-  await testAttrbuteType(test, 'boolean', 'Boolean');
+  await testAttrbuteType(test, 'boolean', 'Boolean!');
 });
 
 // ISSUE 34 CUSTOM TEST CASE 1.3
@@ -172,9 +176,9 @@ test('fail on unknown types attributes', async function (test) {
 });
 
 // ISSUE 34 CUSTOM TEST CASE 1.7
-test('fail with type array in wrong order', async function (test) {
-  const assertion = testAttrbuteType(test, ['string', 'null'], 'null', { skipValidation: true });
-  await test.throwsAsync(() => assertion, 'type "null" must come first in JSON Schema attribute type array');
+test('success if array includes "null"', async function (test) {
+  const assertion = testAttrbuteType(test, ['string', 'null'], 'String', { skipValidation: true });
+  await test.throwsAsync(() => assertion, 'JSON Schema type attribute arrays should only be used to specify nullable type "[null, string]"');
 });
 
 // ISSUE 34 CUSTOM TEST CASE 1.8

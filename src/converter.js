@@ -44,25 +44,32 @@ function getReferenceName (referenceName, buildingInputType) {
 }
 
 function mapBasicAttributeType (type, attributeName) {
-  let stunt;
+  let processedType;
   if (type instanceof Array) {
     if (type.length === 2) {
-      switch (type[type.length - 1]) {
-        case 'null': throw new Error('type "null" must come first in JSON Schema attribute type array');
-        default: stunt = type[type.length - 1];
+      switch (type.includes('null')) {
+        case false: throw new Error('JSON Schema type attribute arrays should only be used to specify nullable type "[null, string]"');
+        default: processedType = type.find(element => element !== 'null');
       }
     } else {
       throw new Error(`JSON Schema attribute type array can only have a max of 2 types/elements`);
     }
+    switch (processedType) {
+      case 'string': return GraphQLString;
+      case 'integer': return GraphQLInt;
+      case 'number': return GraphQLFloat;
+      case 'boolean': return GraphQLBoolean;
+      default: throw new Error(`A JSON Schema attribute type ${processedType} on attribute ${attributeName} does not have a known GraphQL mapping`);
+    }
   } else {
-    stunt = type;
+    processedType = type;
   }
-  switch (stunt) {
-    case 'string': return GraphQLString;
-    case 'integer': return GraphQLInt;
-    case 'number': return GraphQLFloat;
-    case 'boolean': return GraphQLBoolean;
-    default: throw new Error(`A JSON Schema attribute type ${stunt} on attribute ${attributeName} does not have a known GraphQL mapping`);
+  switch (processedType) {
+    case 'string': return GraphQLNonNull(GraphQLString);
+    case 'integer': return GraphQLNonNull(GraphQLInt);
+    case 'number': return GraphQLNonNull(GraphQLFloat);
+    case 'boolean': return GraphQLNonNull(GraphQLBoolean);
+    default: throw new Error(`A JSON Schema attribute type ${processedType} on attribute ${attributeName} does not have a known GraphQL mapping`);
   }
 }
 
