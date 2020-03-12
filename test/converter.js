@@ -176,8 +176,8 @@ test('fail on unknown types attributes', async function (test) {
 });
 
 // ISSUE 34 CUSTOM TEST CASE 1.7
-test('success if array includes "null"', async function (test) {
-  const assertion = testAttrbuteType(test, ['string', 'null'], 'String', { skipValidation: true });
+test('fail if array includes does not include "null"', async function (test) {
+  const assertion = testAttrbuteType(test, ['int', 'string'], 'String', { skipValidation: true });
   await test.throwsAsync(() => assertion, 'JSON Schema type attribute arrays should only be used to specify nullable type "[null, string]"');
 });
 
